@@ -21,35 +21,35 @@ def analize_data():
     train_df = pd.read_csv('./train.csv')
     test_df = pd.read_csv('./test.csv')
 
-    print train_df.columns.values
+    #print train_df.columns.values
 
-    print train_df.info()
+    #print train_df.info()
 
     # 则会判断哪些”列”存在缺失值
     #print train_df.isnull().any()
 
-    print train_df.describe()
-    print train_df.describe(include=['O'])
+    #print train_df.describe()
+    #print train_df.describe(include=['O'])
 
-    print 'Pclass'
+    #print 'Pclass'
     df_temp1 = train_df[['Pclass', 'Survived']].groupby(by='Pclass', as_index=False).mean().sort_values(
         by='Survived', ascending=False)
-    print df_temp1
+    #print df_temp1
 
-    print 'Sex:'
+    #print 'Sex:'
     df_temp2 = train_df[['Sex', 'Survived']].groupby(by='Sex', as_index=False).mean().sort_values(
         by='Survived', ascending=False)
-    print df_temp2
+    #print df_temp2
 
-    print 'SibSp:'
+    #print 'SibSp:'
     df_temp3 = train_df[['SibSp', 'Survived']].groupby(by='SibSp', as_index=False).mean().sort_values(
         by='Survived', ascending=False)
-    print df_temp3
+    #print df_temp3
 
-    print 'Parch:'
+    #print 'Parch:'
     df_temp4 = train_df[['Parch', 'Survived']].groupby(by='Parch', as_index=False).mean().sort_values(
         by='Survived', ascending=False)
-    print df_temp4
+    #print df_temp4
 
 
 def analize_by_pic():
@@ -185,13 +185,13 @@ def feature_manipulate():
 
 def model():
     train_df, test_df = feature_manipulate()
-    print train_df.head(10)
-    print test_df.head(10)
+    #print train_df.head(10)
+    #print test_df.head(10)
 
     x_train = train_df.drop('Survived', axis=1)
     y_train = train_df['Survived']
     x_test = test_df.drop('PassengerId', axis=1).copy()
-    print x_train.shape, y_train.shape, x_test.shape
+    #print x_train.shape, y_train.shape, x_test.shape
 
     '''
     逻辑回归
@@ -249,16 +249,16 @@ def model():
     decision_tree = DecisionTreeClassifier()
     decision_tree.fit(x_train, y_train)
     y_pred = decision_tree.predict(x_test)
-    print 'decision_tree: ', round(decision_tree.score(x_train, y_train)*100, 2)
+    #print 'decision_tree: ', round(decision_tree.score(x_train, y_train)*100, 2)
 
     submission = pd.DataFrame({'PassengerId': test_df['PassengerId'], 'Survived': y_pred})
     #print submission
     submission.to_csv('./submission.csv', index=False)
 
     xgb = XGBClassifier()
-    xgb.fit(x_train,y_train)
+    xgb.fit(x_train, y_train)
     y_pred = xgb.predict(x_test)
-    print 'xgb:', round(xgb.score(x_train, y_train)*100, 2)
+    print('xgb:', round(xgb.score(x_train, y_train)*100, 2))
 
 
 def test():
@@ -266,8 +266,8 @@ def test():
     train_df = pd.read_csv('train.csv')
     test_df = pd.read_csv('test.csv')
 
-    print train_df['Survived']
-    print train_df.describe()
+    #print train_df['Survived']
+    #print train_df.describe()
 
 
 if __name__ == '__main__':
