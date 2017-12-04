@@ -39,3 +39,4 @@ VoxNet-features/*
 *.csv
 .xml
 .iml
+.png
