@@ -37,6 +37,6 @@ VoxNet-for-01-padding/*
 VoxNet-features/*
 *.tfrecords
 *.csv
-.xml
-.iml
-.png
+*.xml
+*.iml
+*.png

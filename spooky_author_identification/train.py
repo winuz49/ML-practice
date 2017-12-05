@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import pandas as pd
+import numpy as np
 import nltk
 import plotly.plotly as py
 import plotly.graph_objs as go
@@ -9,10 +10,14 @@ import skimage.io as io
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud,STOPWORDS
 from nltk.stem import WordNetLemmatizer
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, TfidfTransformer
 from sklearn.datasets import fetch_20newsgroups
 from sklearn.decomposition import NMF, LatentDirichletAllocation
+from sklearn.model_selection import train_test_split
+from sklearn import svm
+from sklearn.naive_bayes import MultinomialNB
 import nltk
+from sklearn.pipeline import Pipeline
 import time
 
 
@@ -34,6 +39,54 @@ def model():
     hpl = train[train.author == 'HPL']['text'].values
     mws = train[train.author == 'MWS']['text'].values
 
+    train['author_num'] = train['author'].map({'EAP': 0, 'HPL': 1, 'MWS': 2})
+    x = train['text']
+    y = train['author_num']
+
+    per = int(float(0.7)*len(x))
+    x_train = x[:per]
+    y_train = y[:per]
+
+    x_test = x[per:]
+    y_test = y[per:]
+
+    vect = CountVectorizer(lowercase=False, token_pattern=r'\w+|\,')
+
+    '''
+    x_cv = vect.fit_transform(x)
+    x_train_cv = vect.fit_transform(x_train)
+    x_test_cv = vect.transform(x_test)
+    clf = MultinomialNB()
+    clf.fit(x_train_cv, y_train)
+    print(clf.score(x_test_cv, y_test))
+    '''
+
+    x_cv = vect.fit_transform(x)
+    x_test = vect.transform(test['text'])
+    clf = MultinomialNB()
+    clf.fit(x_cv, y)
+    pred_result = clf.predict_proba(x_test)
+
+    print(pred_result[0])
+
+    result = pd.DataFrame()
+    result['id'] = test['id']
+    result['EAP'] = pred_result[:, 0]
+    result['HPL'] = pred_result[:, 1]
+    result['MWS'] = pred_result[:, 2]
+
+    print(result.head())
+
+    result.to_csv('./submission.csv', index=False)
+
+    print(result.keys())
+
+
+
+
+
+
+    '''
     f1 = open('./eap.png', 'wb')
     f1.write(codecs.decode(eap_64, 'base64'))
     f1.close()
@@ -45,12 +98,14 @@ def model():
     f3 = open('mws.png', 'wb')
     f3.write(codecs.decode(mws_64, 'base64'))
     f3.close()
+    
+    
 
     eap_mask = io.imread('./eap.png')
     hpl_mask = io.imread('./hpl.png')
     mws_mask = io.imread('./mws.png')
 
-    '''
+    
     plt.figure(figsize=(16, 13))
     wc = WordCloud(background_color='black', max_words=10000, mask=eap_mask, stopwords=STOPWORDS, max_font_size=40)
     wc.generate(''.join(eap))
@@ -74,7 +129,7 @@ def model():
     plt.imshow(wc, alpha=0.98)
     plt.axis('off')
     plt.show()
-    '''
+    
 
     test_sentence = test.text[2]
     print(test_sentence)
@@ -102,8 +157,7 @@ def model():
     print('the lemmatized form of leaves is {}'.format(lemm.lemmatize('beautifully')))
 
     sentence = ["I love to eat Burgers",
-                "I love to eat Fries",
-                'I want to eat Burgers']
+                "Burgers love to eat I"]
 
     vectorize = CountVectorizer(min_df=0)
     print(sentence)
@@ -111,6 +165,7 @@ def model():
     print('The features are:\n {}'.format(vectorize.get_feature_names()))
     print('\nThe vectorize arry looks like \n:{}'.format(sentence_transform.toarray()))
     print(sentence_transform)
+    '''
 
 
 
@@ -208,8 +263,22 @@ def topic_extraction():
     tf_feature_names = tf_vectorizer.get_feature_names()
     print_top_words(lda, tf_feature_names, n_top_words)
 
+    print(len(lda.components_))
+    first_topic = lda.components_[0]
+    print(first_topic)
+
+    first_words = [tf_feature_names[i] for i in first_topic.argsort()[:-50-1:-1]]
+    print(first_words)
+    print(tf_feature_names)
+
+    firstcloud = WordCloud(stopwords=STOPWORDS, background_color='black',
+                           width=2500, height=1800).generate(' '.join(first_words))
+    plt.imshow(firstcloud)
+    plt.axis('off')
+    plt.show()
+
     return
 
 
 if __name__ == '__main__':
-    topic_extraction()
+    model()
