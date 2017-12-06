@@ -81,6 +81,8 @@ def model():
 
     print(result.keys())
 
+    print(result.head())
+
 
 
 
