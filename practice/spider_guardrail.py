@@ -3,7 +3,6 @@
 import re
 import os
 import requests
-import time
 import urllib
 import itertools
 
@@ -42,15 +41,6 @@ def build_urls(word):
     return urls
 
 
-"""解码百度图片搜索json中传递的url
-抓包可以获取加载更多图片时，服务器向网址传输的json。
-其中originURL是特殊的字符串
-解码前：
-ippr_z2C$qAzdH3FAzdH3Ffl_z&e3Bftgwt42_z&e3BvgAzdH3F4omlaAzdH3Faa8W3ZyEpymRmx3Y1p7bb&mla
-解码后：
-http://s9.sinaimg.cn/mw690/001WjZyEty6R6xjYdtu88&690
-使用下面两张映射表进行解码。
-"""
 str_table = {
     '_z2C$q': ':',
     '_z&e3B': '.',
@@ -92,9 +82,7 @@ char_table = {
     'l': '9',
     'a': '0'
 }
-# str 的translate方法需要用单个字符的十进制unicode编码作为key
-# value 中的数字会被当成十进制unicode编码转换成字符
-# 也可以直接用字符串作为value
+
 char_table = {ord(key): ord(value) for key, value in char_table.items()}
 
 
