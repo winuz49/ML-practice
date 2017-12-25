@@ -40,3 +40,7 @@ VoxNet-features/*
 *.xml
 *.iml
 *.png
+*.wav
+*.7z
+LICENSE
+speech_re.md
