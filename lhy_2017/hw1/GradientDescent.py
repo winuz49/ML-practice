@@ -47,6 +47,9 @@ class GradientDescent(object):
     def predict(self, X):
         return
 
+    def fit(self, x, y, learning_rate):
+        return
+
     def compute_err(self, X, y):
         return
 
