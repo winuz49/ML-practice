@@ -1,6 +1,6 @@
 import numpy as np
 
-#TODO
+#TODO fuck the linear promble wates my time
 class GradientDescent(object):
     def __init__(self, wt, b, x, y, lr):
         self.__wt = wt
