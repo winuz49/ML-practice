@@ -44,3 +44,4 @@ VoxNet-features/*
 *.7z
 LICENSE
 speech_re.md
+.idea*
